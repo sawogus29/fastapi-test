@@ -1,0 +1,36 @@
+apiVersion: opentelemetry.io/v1alpha1
+kind: Instrumentation
+metadata:
+  name: otel-instrumentation
+  namespace: fastapi-kafka
+spec:
+  exporter:
+    endpoint: http://otel-collector:4317
+  propagators:
+    - tracecontext
+    - baggage
+  sampler:
+    type: parentbased_traceidratio
+    argument: "1"
+  python:
+    env:
+      # Required if endpoint is set to 4317.
+      # Python autoinstrumentation uses http/proto by default
+      # so data must be sent to 4318 instead of 4317.
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: http://otel-collector:4318
+      # LOG
+      - name: OTEL_PYTHON_LOG_CORRELATION
+        value: 'true'
+      - name: OTEL_PYTHON_LOG_FORMAT
+        value: '%(msg)s [%(otelTraceID)s:%(otelSpanID)s]'
+      # - name: OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED  # not log but otlp
+      #   value: 'true'
+      # - name: OTEL_LOGS_EXPORTER
+      #   value: console
+        # value: otlp_proto_http
+      # METRIC
+      # - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+      #   value: http://demo-collector:4318/v1/metrics
+      - name: OTEL_METRICS_EXPORTER
+        value: none
