@@ -1,3 +1,4 @@
+# app2-deployment-service.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,36 +17,12 @@ spec:
         app: app2
     spec:
       containers:
-        - name: app2
-          image: app2:latest
-          imagePullPolicy: Never
-          ports:
-            - containerPort: 8001
-          env:
-            - name: KAFKA_BOOTSTRAP_SERVERS
-              value: kafka:9092
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 8001
-            initialDelaySeconds: 15
-            periodSeconds: 20
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: 8001
-            initialDelaySeconds: 5
-            periodSeconds: 10
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: app2
-  namespace: fastapi-kafka
-spec:
-  selector:
-    app: app2
-  ports:
-    - protocol: TCP
-      port: 8001
-      targetPort: 8001
+      - name: app2
+        image: dev.local/app2:latest  # Replace with your actual image tag
+        imagePullPolicy: Never
+        env:
+        - name: KAFKA_BOOTSTRAP_SERVERS
+          value: "kafka:9092"
+        - name: APP3_SERVICE_URL
+          value: "http://app3-service:8003"
+      restartPolicy: Always

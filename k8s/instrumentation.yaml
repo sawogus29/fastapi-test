@@ -5,7 +5,7 @@ metadata:
   namespace: fastapi-kafka
 spec:
   exporter:
-    endpoint: http://otel-collector:4317
+    endpoint: http://jaeger.observability:4317
   propagators:
     - tracecontext
     - baggage
@@ -18,12 +18,14 @@ spec:
       # Python autoinstrumentation uses http/proto by default
       # so data must be sent to 4318 instead of 4317.
       - name: OTEL_EXPORTER_OTLP_ENDPOINT
-        value: http://otel-collector:4318
+        value: http://jaeger.observability:4318
       # LOG
       - name: OTEL_PYTHON_LOG_CORRELATION
         value: 'true'
+      # - name: OTEL_PYTHON_LOG_LEVEL
+      #   value: 'debug'
       - name: OTEL_PYTHON_LOG_FORMAT
-        value: '%(msg)s [%(otelTraceID)s:%(otelSpanID)s]'
+        value: '[%(otelTraceID)s:%(otelSpanID)s] %(message)s'
       # - name: OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED  # not log but otlp
       #   value: 'true'
       # - name: OTEL_LOGS_EXPORTER

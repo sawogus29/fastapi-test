@@ -1,42 +1,39 @@
-# app1-deployment-service.yaml
+# app3-deployment-service.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app1
+  name: app3
   namespace: fastapi-kafka
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: app1
+      app: app3
   template:
     metadata:
       annotations:
         instrumentation.opentelemetry.io/inject-python: "true"
       labels:
-        app: app1
+        app: app3
     spec:
       containers:
-      - name: app1
-        image: dev.local/app1:latest  # Replace with your actual image tag
+      - name: app3
+        image: dev.local/app3:latest  # Replace with your actual image tag
         imagePullPolicy: Never
         ports:
-        - containerPort: 8001
-        env:
-        - name: KAFKA_BOOTSTRAP_SERVERS
-          value: "kafka:9092"
+        - containerPort: 8003
       restartPolicy: Always
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: app1-service
+  name: app3-service
   namespace: fastapi-kafka
 spec:
   selector:
-    app: app1
+    app: app3
   ports:
   - protocol: TCP
-    port: 8001
-    targetPort: 8001
+    port: 8003
+    targetPort: 8003
   type: ClusterIP

@@ -5,14 +5,14 @@ services:
     build:
       context: ./src/app1
       dockerfile: Dockerfile
-    image: app1:latest
+    image: dev.local/app1:latest
     container_name: app1
     depends_on:
       - kafka
     environment:
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     ports:
-      - "8000:8000"
+      - "8001:8001"
     volumes:
       - ./src/app1:/app
     restart: always
@@ -21,14 +21,30 @@ services:
     build:
       context: ./src/app2
       dockerfile: Dockerfile
-    image: app1:latest
+    image: dev.local/app2:latest
     container_name: app2
     depends_on:
       - kafka
     environment:
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     ports:
-      - "8001:8001"
+      - "8002:8002"
+    volumes:
+      - ./src/app2:/app
+    restart: always
+
+  app3:
+    build:
+      context: ./src/app3
+      dockerfile: Dockerfile
+    image: dev.local/app3:latest
+    container_name: app3
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    ports:
+      - "8003:8003"
     volumes:
       - ./src/app2:/app
     restart: always
